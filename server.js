@@ -6,13 +6,13 @@ const { v2: cloudinary } = require('cloudinary');
 
 // Initialize Express app
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Cloudinary configuration
+// Cloudinary configuration from environment variables
 cloudinary.config({ 
-    cloud_name: 'dqjv9bpx5', 
-    api_key: '399229417188974', 
-    api_secret: 'DB1jzmhzgl5lBBcEhZkk3LzcqR0' // Replace with your actual API secret
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // Serve static files
