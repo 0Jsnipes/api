@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Photos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Wedding Photos!</h1>
+        <div class="upload-section">
+            <form id="uploadForm" enctype="multipart/form-data">
+                <label for="photos" class="upload-label">Select images:</label>
+                <input type="file" id="photos" name="photos" accept="image/*" multiple required>
+                <button type="submit" class="upload-button">Upload</button>
+            </form>
+            <div id="result" class="result">
+                <!-- Image previews will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('photos');
+
+            for (const file of fileInput.files) {
+                formData.append('photos', file);
+            }
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+
+                if (data.imageUrls && data.imageUrls.length > 0) {
+                    resultDiv.innerHTML = data.imageUrls.map(url => 
+                        `<div class="image-container">
+                            <a href="${url}" target="_blank">View Image</a>
+                            <img src="${url}" alt="Uploaded Image" class="uploaded-image">
+                        </div>`
+                    ).join('');
+                } else {
+                    resultDiv.innerHTML = `<p>Error uploading images</p>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<p>Error uploading images</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
